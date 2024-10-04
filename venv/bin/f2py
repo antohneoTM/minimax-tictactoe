@@ -1,4 +1,4 @@
-#!/Users/ant.oh.neo/Desktop/MinimaxTicTacToe/venv/bin/python3.12
+#!/Users/ant.oh.neo/Github/minimax-tictactoe/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
