@@ -1,9 +1,10 @@
 """
-    File: draw_board_game.py
+    File: draw_game.py
     Vers: 3.12.5
     Desc: Draws board of the tic-tac-toe game
     Dev:  Antonio Camacho
 """
+
 
 import pygame as pg  # Vers: 2.6.0
 

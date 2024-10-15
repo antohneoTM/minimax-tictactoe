@@ -6,6 +6,7 @@
 """
 
 # import numpy as np  # Vers: 1.26.4
+import math
 
 
 def empty_board(bs: list, ng: int) -> None:
@@ -92,7 +93,8 @@ def get_score(bs: list) -> (int, list):
     return (total_score, score_sequence)
 
 
-def minimax(bs: list, depth: int, mp: bool, gm) -> (int, list):
+def minimax(bs: list, depth: int, mp: bool, gm, alpha, beta) -> (int, list):
+    """Minimax algorithm with alpha-beta prunning"""
     # print(np.array(bs))
     # print(depth)
 
@@ -117,39 +119,49 @@ def minimax(bs: list, depth: int, mp: bool, gm) -> (int, list):
 
     # Beginning of actual minimax integration
     if mp:
-        best_score = -99999
+        best_value = -math.inf
         best_move = None
 
         for move in valid_moves(bs):
             bs = play_move(bs, move, player=1)
 
-            current_score = minimax(bs, depth-1, False, gm)[0]
+            current_value, _ = minimax(bs, depth-1, False, gm, alpha, beta)
 
             # Undo the move, so its not permenant
             bs = play_move(bs, move, player=0)
 
-            if current_score > best_score:
-                best_score = current_score
+            if current_value > best_value:
+                best_value = current_value
                 best_move = move
 
-        # print(best_score)
-        return best_score, best_move
+            # Prune
+            alpha = max(alpha, current_value)
+            if beta <= alpha:
+                break
+
+        # print(best_value, best_move)
+        return best_value, best_move
 
     else:
-        best_score = 99999
+        best_value = math.inf
         best_move = None
 
         for move in valid_moves(bs):
             bs = play_move(bs, move, player=-1)
 
-            current_score = minimax(bs, depth-1, True, gm)[0]
+            current_value, _ = minimax(bs, depth-1, True, gm, alpha, beta)
 
             # Undo move
             bs = play_move(bs, move, player=0)
 
-            if current_score < best_score:
-                best_score = current_score
+            if current_value < best_value:
+                best_value = current_value
                 best_move = move
 
-        # print(best_score)
-        return best_score, best_move
+            # Prune
+            beta = min(beta, current_value)
+            if beta <= alpha:
+                break
+
+        # print(best_value, best_move)
+        return best_value, best_move

@@ -4,13 +4,16 @@
     Desc: Main  file for the tic-tac-toe minimax game
     Dev:  Antonio Camacho
 """
+
+import math
 import sys
+from pathlib import Path
+
+import pygame as pg  # Vers: 2.6.0
 
 import change_game_settings as cgs
 import game_status as gs
 from draw_game import DrawGame as dg
-
-import pygame as pg  # Vers: 2.6.0
 
 
 class Game:
@@ -21,7 +24,7 @@ class Game:
         self.num_grid: int = 3
         self.board: list = []
         self.game_mode: str = "modern"
-        self.depth: int = 8
+        self.depth: int = 10
 
         # Bools for the state of the game
         self.game_started: bool = False
@@ -35,10 +38,18 @@ class Game:
         # Initialize pygame
         pg.init()
         self.screen = pg.display.set_mode(self.win_size)
-        pg.display.set_caption("\'X\' Turn")
-        pg.display.set_icon(pg.image.load("images/temp-icon.png"))
+
+        # Load icon image
+        script_dir = Path(__file__).parent
+        icon_path = script_dir.parent / 'images' / 'temp-icon.png'
+        icon_image = pg.image.load(str(icon_path))
+        pg.display.set_icon(icon_image)
+
         self.clock = pg.time.Clock()
+
+        pg.display.set_caption("\'X\' Turn")
         gs.empty_board(self.board, self.num_grid)
+        self.vm = gs.valid_moves(self.board)
         self.dg = dg(self, self.win_size, self.num_grid)
         cgs.print_controls(self)
 
@@ -102,7 +113,7 @@ class Game:
             for i in range(0, len(score[1]), 1):
                 self.dg.draw_score_line(score[1][i])
             if score[0] < 0:
-                pg.display.set_caption("\'O\' Wins")
+                pg.display.set_caption("\'O' Wins")
             elif score[0] > 0:
                 pg.display.set_caption("\'X\' Wins")
             else:
@@ -139,7 +150,7 @@ class Game:
             max_agent = False
 
         score, ai_move = gs.minimax(self.board, self.depth, max_agent,
-                                    self.game_mode)
+                                    self.game_mode, -math.inf, math.inf)
 
         self.board = gs.play_move(self.board, ai_move, self.player)
         if (self.player == 1):
