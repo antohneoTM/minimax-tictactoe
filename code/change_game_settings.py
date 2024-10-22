@@ -6,9 +6,8 @@
 """
 
 import game_status as gs
+import pygame as pg
 from draw_game import DrawGame
-
-import pygame as pg  # Vers: 2.6.0
 
 
 def reset_game(game: object) -> None:
@@ -27,6 +26,30 @@ def reset_game(game: object) -> None:
     pg.display.set_caption("\'X\' Turn")
 
     game.valid_moves = gs.valid_moves(game.board)
+
+
+def print_current_settings(game: object, event) -> None:
+    """Prints the current game settings"""
+
+    if event.key == pg.K_v:
+        print("----------------")
+        print("Current Settings")
+        print("----------------")
+        print("Window Size:", game.win_size)
+        print("Number of Grids:", game.num_grid)
+        print("Game Mode:", game.game_mode)
+        if game.ai_goal == 1:
+            print("Player \'X\': AI Player")
+            print("Player \'O\': Human Player")
+        elif game.ai_goal == 2:
+            print("Player \'X\': Human Player")
+            print("Player \'O\': AI Player")
+        elif game.ai_goal == 0:
+            print("Player \'X\': Human Player")
+            print("Player \'O\': Human Player")
+        else:
+            print("WTF Happened")
+        print("Minimax Search Depth:", game.depth)
 
 
 def change_grid_size(game: object, event) -> None:
@@ -98,20 +121,23 @@ def change_game_mode(game: object, event) -> None:
 def change_minimax_depth(game: object, event) -> None:
     """Changes the depth of the minimax algorithm"""
 
-    # Depth 2
-    if event.key == pg.K_a:
-        print("Changing depth to 2")
-        game.depth = 2
+    # Decrement depth
+    if event.key == pg.K_MINUS:
+        if game.depth == 1:
+            print("Minimum search depth already applied...")
+            return None
 
-    # Depth 6
-    if event.key == pg.K_s:
-        print("Changing depth to 6")
-        game.depth = 6
+        game.depth -= 1
+        print("Changing search depth to:", game.depth)
 
-    # Depth 8
-    if event.key == pg.K_d:
-        print("Changing depth to 8")
-        game.depth = 8
+    # Increment depth
+    if event.key == pg.K_EQUALS:
+        if game.depth == 12:
+            print("Maximum search depth already applied...")
+            return None
+
+        game.depth += 1
+        print("Changing search depth to:", game.depth)
 
 
 def change_ai_turn(game: object, event) -> None:
@@ -123,7 +149,11 @@ def change_ai_turn(game: object, event) -> None:
 
     elif event.key == pg.K_2:
         print("AI will go second")
-        game.ai_goal = 2
+        game.ai_goal = -1
+
+    elif event.key == pg.K_0:
+        print("AI disabled")
+        game.ai_goal = 0
 
 
 def change_player(game: object) -> None:
@@ -141,10 +171,15 @@ def print_controls(game: object) -> None:
 
     print("\nWelcome to Minimax Tic-Tac-Toe")
     print("------------------------------")
+    print("Left mouse click on grid to start a game")
+    print("Click on empty space to make a move")
+    print("Click on AI turn to begin minimax algorithm search")
     print("Q, W, E: Change window size")
     print("3, 4: Change number of grids")
     print("C, M: Change game mode")
-    print("1, 2: Switch which player goes first")
-    print("A, S, D: Change minimax algorithm search depth")
-    print("R: Reset the game")
+    print("1, 2: Switch AI turn order (Enables AI if disabled)")
+    print("-, = : Change minimax algorithm search depth")
+    print("0: Disable AI")
+    print("R: Reset the current game")
+    print("V: Print current settings")
     print("P: Reprint these controls")

@@ -5,8 +5,21 @@
     Dev:  Antonio Camacho
 """
 
-# import numpy as np  # Vers: 1.26.4
 import math
+
+
+def check_terminal(gm: bool, bs: list) -> bool:
+    """Check current state of the game board and return bool"""
+
+    if gm == "modern" and check_board_filled(bs):
+        return True
+
+    if gm == "classic":
+        score, _ = get_score(bs)
+        if score != 0 or check_board_filled(bs):
+            return True
+
+    return False
 
 
 def empty_board(bs: list, ng: int) -> None:

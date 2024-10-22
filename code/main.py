@@ -9,7 +9,7 @@ import math
 import sys
 from pathlib import Path
 
-import pygame as pg  # Vers: 2.6.0
+import pygame as pg
 
 import change_game_settings as cgs
 import game_status as gs
@@ -24,7 +24,7 @@ class Game:
         self.num_grid: int = 3
         self.board: list = []
         self.game_mode: str = "modern"
-        self.depth: int = 10
+        self.depth: int = 9
 
         # Bools for the state of the game
         self.game_started: bool = False
@@ -71,6 +71,7 @@ class Game:
                 cgs.change_game_mode(self, event)
                 cgs.change_minimax_depth(self, event)
                 cgs.change_ai_turn(self, event)
+                cgs.print_current_settings(self, event)
 
                 if event.key == pg.K_ESCAPE:
                     self.close_game()
@@ -106,43 +107,15 @@ class Game:
         elif (self.player == -1):
             self.dg.draw_circle(grid_coord)
 
-        # Check if a player has won
-        if self.game_mode == "modern" and gs.check_board_filled(self.board):
-            self.game_over = True
-            score = gs.get_score(self.board)
-            for i in range(0, len(score[1]), 1):
-                self.dg.draw_score_line(score[1][i])
-            if score[0] < 0:
-                pg.display.set_caption("\'O' Wins")
-            elif score[0] > 0:
-                pg.display.set_caption("\'X\' Wins")
-            else:
-                pg.display.set_caption("Tie")
-
-            return None
-        elif self.game_mode == "classic":
-            score = gs.get_score(self.board)
-            if score[0] != 0:
-                self.game_over = True
-                self.dg.draw_score_line(score[1][0])
-                if score[0] < 0:
-                    pg.display.set_caption("\'O\' Wins")
-                elif score[0] > 0:
-                    pg.display.set_caption("\'X\' Wins")
-
-                return None
-            elif gs.check_board_filled(self.board):
-                pg.display.set_caption("Tie")
-                return None
-
-        # Change turn
-        cgs.change_player(self)
-
-        self.play_ai()
+        self.determine_winner()
 
     # Plays AI turn
     def play_ai(self) -> None:
         """Plays AI turn using minimax algorithm"""
+
+        if self.game_over:
+            return None
+
         max_agent: bool = None
         if self.ai_goal == 1:
             max_agent = True
@@ -158,37 +131,7 @@ class Game:
         elif (self.player == -1):
             self.dg.draw_circle(ai_move)
 
-        # Checks for win
-        if self.game_mode == "modern" and gs.check_board_filled(self.board):
-            self.game_over = True
-            score = gs.get_score(self.board)
-            for i in range(0, len(score[1]), 1):
-                self.dg.draw_score_line(score[1][i])
-            if score[0] < 0:
-                pg.display.set_caption("\'O\' Wins")
-            elif score[0] > 0:
-                pg.display.set_caption("\'X\' Wins")
-            else:
-                pg.display.set_caption("Tie")
-
-            return None
-        elif self.game_mode == "classic":
-            score = gs.get_score(self.board)
-            if score[0] != 0:
-                self.game_over = True
-                self.dg.draw_score_line(score[1][0])
-                if score[0] < 0:
-                    pg.display.set_caption("\'O\' Wins")
-                elif score[0] > 0:
-                    pg.display.set_caption("\'X\' Wins")
-
-                return None
-            elif gs.check_board_filled(self.board):
-                pg.display.set_caption("Tie")
-                return None
-
-        # Swaps turn
-        cgs.change_player(self)
+        self.determine_winner()
 
     def get_coord(self, ws: int, ng: int) -> list:
         """Determines where on game grid the user clicked"""
@@ -198,7 +141,33 @@ class Game:
         y = int(mouse_coord[1] // (ws // ng))
         return [x, y]
 
+    def determine_winner(self) -> None:
+        """Determines if there is a winner of the game. If not switch turn.
+        If there is, then calcuate final scores and print score lines"""
+
+        # Checks for win
+        self.game_over = gs.check_terminal(self.game_mode, self.board)
+        if not self.game_over:
+            cgs.change_player(self)
+            return None
+
+        score, sequence = gs.get_score(self.board)
+        # Print score sequences
+        for i in range(0, len(sequence), 1):
+            self.dg.draw_score_line(sequence[i])
+
+        # Set caption to announce the winner
+        if score < 0:
+            pg.display.set_caption("\'O' Wins")
+        elif score > 0:
+            pg.display.set_caption("\'X\' Wins")
+        else:
+            pg.display.set_caption("Tie")
+
     def close_game(self) -> None:
+        """Notifys user, then closes application"""
+
+        print("Thank you for playing Tic-Tac-Toe!\nClosing application...")
         pg.quit()
         sys.exit()
 
