@@ -2,7 +2,7 @@
     File: draw_game.py
     Vers: 3.12.5
     Desc: Draws board of the tic-tac-toe game
-    Dev:  Antonio Camacho
+    Devs: Antonio Camacho
 """
 
 

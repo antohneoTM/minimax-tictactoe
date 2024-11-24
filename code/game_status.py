@@ -2,7 +2,7 @@
     File: game_status.py
     Vers: 3.12.5
     Desc: Contains information regarding the current state of the game
-    Dev:  Antonio Camacho
+    Devs: Antonio Camacho
 """
 
 import math

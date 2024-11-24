@@ -1,18 +1,17 @@
 """
     File: main.py
     Vers: 3.12.5
-    Desc: Main  file for the tic-tac-toe minimax game
-    Dev:  Antonio Camacho
+    Desc: Main file for the tic-tac-toe minimax game
+    Devs: Antonio Camacho
 """
 
 import math
 import sys
 from pathlib import Path
 
-import pygame as pg
-
 import change_game_settings as cgs
 import game_status as gs
+import pygame as pg
 from draw_game import DrawGame as dg
 
 

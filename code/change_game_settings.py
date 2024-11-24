@@ -2,7 +2,7 @@
     File: change_game_settings.py
     Vers: 3.12.5
     Desc: Changes game settings such as window size, grid size, and game mode
-    Dev:  Antonio Camacho
+    Devs: Antonio Camacho
 """
 
 import game_status as gs
