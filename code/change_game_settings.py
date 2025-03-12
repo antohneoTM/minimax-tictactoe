@@ -41,14 +41,15 @@ def print_current_settings(game: object, event) -> None:
         if game.ai_goal == 1:
             print("Player \'X\': AI Player")
             print("Player \'O\': Human Player")
-        elif game.ai_goal == 2:
+        elif game.ai_goal == -1:
             print("Player \'X\': Human Player")
             print("Player \'O\': AI Player")
         elif game.ai_goal == 0:
             print("Player \'X\': Human Player")
             print("Player \'O\': Human Player")
         else:
-            print("WTF Happened")
+            print(game.ai_goal)
+            print("Error with player turn")
         print("Minimax Search Depth:", game.depth)
 
 
@@ -110,12 +111,12 @@ def change_game_mode(game: object, event) -> None:
     # Classic
     if event.key == pg.K_c:
         print("Changing game mode to \'Classic\'")
-        game.game_mode = "classic"
+        game.game_mode = "Classic"
 
     # Modern
     if event.key == pg.K_m:
         print("Change game mode to \'Modern\'")
-        game.game_mode = "modern"
+        game.game_mode = "Modern"
 
 
 def change_minimax_depth(game: object, event) -> None:
@@ -178,8 +179,8 @@ def print_controls(game: object) -> None:
     print("3, 4: Change number of grids")
     print("C, M: Change game mode")
     print("1, 2: Switch AI turn order (Enables AI if disabled)")
-    print("-, = : Change minimax algorithm search depth")
     print("0: Disable AI")
+    print("-, = : Change minimax algorithm search depth")
     print("R: Reset the current game")
     print("V: Print current settings")
-    print("P: Reprint these controls")
+    print("P: Reprint controls")
